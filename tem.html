@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Temperature Converter</title>
+  <style>/* Reset and base styling */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: #fff;
+}
+
+/* Animated gradient background */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  color: #ffffff;
+}
+
+h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.converter {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+input,
+select {
+  padding: 0.9rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input:focus,
+select:focus {
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5);
+}
+
+button {
+  padding: 0.9rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(to right, #43e97b, #38f9d7);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+#result {
+  margin-top: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive design */
+@media (max-width: 500px) {
+  .container {
+    padding: 2rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Toggle switch container */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
+  color: #fff;
+  font-weight: 600;
+  user-select: none;
+}
+
+/* Switch styling */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  border-radius: 24px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #4a90e2;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* Dark Mode styles */
+body.dark {
+  background: linear-gradient(135deg, #1e1e2f, #121217);
+  animation: none;
+  color: #ddd;
+}
+
+body.dark .container {
+  background: rgba(30, 30, 47, 0.85);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+  color: #ddd;
+  text-shadow: none;
+}
+
+body.dark input,
+body.dark select {
+  background-color: #2a2a3f;
+  color: #ddd;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.1);
+  border: 1px solid #555;
+}
+
+body.dark input:focus,
+body.dark select:focus {
+  box-shadow: 0 0 8px #4a90e2;
+}
+
+body.dark button {
+  background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  box-shadow: 0 4px 15px rgba(58, 123, 213, 0.6);
+}
+
+body.dark button:hover {
+  box-shadow: 0 6px 25px rgba(0, 210, 255, 0.8);
+}
+
+body.dark #result {
+  color: #80caff;
+  text-shadow: 0 0 6px #80caff;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌡️ Temperature Converter</h1>
+
+    <!-- Dark Mode Toggle -->
+    <div class="theme-toggle">
+      <label class="switch">
+        <input type="checkbox" id="darkModeToggle" />
+        <span class="slider round"></span>
+      </label>
+      <span>Dark Mode</span>
+    </div>
+
+    <div class="converter">
+      <input type="number" id="inputValue" placeholder="Enter value" />
+
+      <select id="fromUnit">
+        <option value="celsius">Celsius (°C)</option>
+        <option value="fahrenheit">Fahrenheit (°F)</option>
+        <option value="kelvin">Kelvin (K)</option>
+      </select>
+
+      <span>to</span>
+
+      <select id="toUnit">
+        <option value="fahrenheit">Fahrenheit (°F)</option>
+        <option value="celsius">Celsius (°C)</option>
+        <option value="kelvin">Kelvin (K)</option>
+      </select>
+
+      <button onclick="convertTemperature()">Convert</button>
+
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>function convertTemperature() {
+  const inputValue = parseFloat(document.getElementById("inputValue").value);
+  const fromUnit = document.getElementById("fromUnit").value;
+  const toUnit = document.getElementById("toUnit").value;
+  const resultDiv = document.getElementById("result");
+
+  if (isNaN(inputValue)) {
+    resultDiv.textContent = "Please enter a valid number.";
+    return;
+  }
+
+  let celsiusValue;
+
+  // Convert input to Celsius first
+  if (fromUnit === "celsius") {
+    celsiusValue = inputValue;
+  } else if (fromUnit === "fahrenheit") {
+    celsiusValue = (inputValue - 32) * (5 / 9);
+  } else if (fromUnit === "kelvin") {
+    celsiusValue = inputValue - 273.15;
+  }
+
+  let output;
+
+  // Convert Celsius to target unit
+  if (toUnit === "celsius") {
+    output = celsiusValue;
+  } else if (toUnit === "fahrenheit") {
+    output = (celsiusValue * 9) / 5 + 32;
+  } else if (toUnit === "kelvin") {
+    output = celsiusValue + 273.15;
+  }
+
+  resultDiv.textContent = `Result: ${output.toFixed(2)} ${getUnitSymbol(toUnit)}`;
+}
+
+function getUnitSymbol(unit) {
+  switch (unit) {
+    case "celsius":
+      return "°C";
+    case "fahrenheit":
+      return "°F";
+    case "kelvin":
+      return "K";
+    default:
+      return "";
+  }
+}
+
+// Dark mode toggle logic
+const toggle = document.getElementById("darkModeToggle");
+
+// Load saved theme if any
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  toggle.checked = true;
+}
+
+toggle.addEventListener("change", () => {
+  if (toggle.checked) {
+    document.body.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    document.body.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+});
+</script>
+</body>
+</html>
